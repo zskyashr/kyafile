@@ -1,57 +1,74 @@
-import { Text, View } from "react-native";
+import React, { useState } from 'react';
+import { Dimensions, Image, Pressable, ScrollView, StyleSheet } from 'react-native';
 
-export default function Index() {
+const generateBas69ImagePairs = () => {
+  const baseNIM = '10584110';
+  const suffix = '22';
+  const baseURL = 'https://simak.unismuh.ac.id/upload/mahasiswa/';
+  const query = '_.jpg?1751871539';
+  const altURL = 'https://uploads-us-west-2.insided.com/figma-en/attachment/7105e9c010b3d1f0ea893ed5ca3bd58e6cec090e.gif';
+
+  const pairs = [];
+  for (let i = 57; i <= 65; i++) {
+    const nim = `${baseNIM}${i}${suffix}`;
+    const main = `${baseURL}${nim}${query}`;
+    pairs.push({ main, alt: altURL });
+  }
+  return pairs;
+};
+
+const bas69ImagePairs = generateBas69ImagePairs();
+
+export default function Bas69GambarGrid() {
+  const [bas69States, setBas69States] = useState(
+    bas69ImagePairs.map(() => ({ scale: 1, isAlt: false }))
+  );
+
+  const bas69HandlePress = (index: number) => {
+    setBas69States((prev) =>
+      prev.map((item, i) => {
+        if (i !== index) return item;
+        const newScale = item.scale < 2 ? item.scale * 1.2 : 1;
+        return {
+          scale: newScale,
+          isAlt: !item.isAlt,
+        };
+      })
+    );
+  };
+
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        gap: 20,
-      }}
-    >
-     <View
-  style={{
-    width: 0,
-    height: 0,
-    backgroundColor: "transparent",
-    borderLeftWidth: 50,
-    borderRightWidth: 50,
-    borderBottomWidth: 100,
-    borderLeftColor: "transparent",
-    borderRightColor: "transparent",
-    borderBottomColor: "blue",
-  }}
-/>
-
-
-      {/* Pil (berisi stambuk) */}
-      <View
-        style={{
-          paddingHorizontal: 20,
-          paddingVertical: 10,
-          backgroundColor: "green",
-          borderRadius: 50,
-        }}
-      >
-        <Text style={{ color: "white", fontWeight: "bold" }}>105841105722</Text>
-      </View>
-
-      {/* Persegi panjang horizontal (berisi nama) */}
-      <View
-        style={{
-          width: 200,
-          height: 50,
-          backgroundColor: "orange",
-          justifyContent: "center",
-          alignItems: "center",
-          borderRadius: 10,
-        }}
-      >
-        <Text style={{ color: "white", fontSize: 16, fontWeight: "bold" }}>
-          Zaskya Aulia Ashar
-        </Text>
-      </View>
-    </View>
+    <ScrollView contentContainerStyle={bas69Styles.grid}>
+      {bas69ImagePairs.map((pair, index) => (
+        <Pressable key={index} onPress={() => bas69HandlePress(index)}>
+          <Image
+            source={{ uri: bas69States[index].isAlt ? pair.alt : pair.main }}
+            style={[
+              bas69Styles.image,
+              { transform: [{ scale: bas69States[index].scale }] },
+            ]}
+          />
+        </Pressable>
+      ))}
+    </ScrollView>
   );
 }
+
+const bas69Styles = StyleSheet.create({
+  grid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    padding: 10,
+  },
+  image: {
+    width: Dimensions.get('window').width / 3 - 20,
+    height: Dimensions.get('window').width / 3 - 20,
+    margin: 5,
+    borderRadius: 10,
+    resizeMode: 'cover',
+    backgroundColor: '#ddd',
+    borderWidth: 1,
+    borderColor: '#aaa',
+  },
+});
