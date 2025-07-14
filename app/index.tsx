@@ -1,15 +1,14 @@
 import React, { useState } from 'react';
 import {
   View,
-  ScrollView,
+  FlatList,
   Pressable,
   Animated,
-  Dimensions,
-  StyleSheet,
   Image,
+  StyleSheet,
+  Dimensions,
 } from 'react-native';
 
-// Pasangan gambar: 9 utama dan 9 alternatif
 const imagePairs = [
   { main: 'https://picsum.photos/id/101/300', alt: 'https://picsum.photos/id/201/300' },
   { main: 'https://picsum.photos/id/102/300', alt: 'https://picsum.photos/id/202/300' },
@@ -22,10 +21,9 @@ const imagePairs = [
   { main: 'https://picsum.photos/id/109/300', alt: 'https://picsum.photos/id/209/300' },
 ];
 
-export default function App() {
-  const imageSize = Dimensions.get('window').width / 3 - 12;
+const CELL_SIZE = Dimensions.get('window').width / 3 - 12;
 
-  // Inisialisasi state gambar
+export default function GambarGrid3x3() {
   const [imageStates, setImageStates] = useState(
     imagePairs.map(() => ({
       isAlt: false,
@@ -35,68 +33,62 @@ export default function App() {
   );
 
   const handleImagePress = (index: number) => {
-    // Dapatkan state lama lalu ubah
-    setImageStates((prevStates) => {
-      const updatedStates = prevStates.map((state, i) => {
-        if (i !== index) return state;
+    setImageStates((prev) =>
+      prev.map((item, i) => {
+        if (i !== index) return item;
 
-        const nextScaleValue = Math.min(state.scaleValue * 1.2, 2.0);
+        const nextScale = Math.min(item.scaleValue * 1.2, 2);
 
-        // Jalankan animasi pembesaran
-        Animated.timing(state.scale, {
-          toValue: nextScaleValue,
+        Animated.timing(item.scale, {
+          toValue: nextScale,
           duration: 200,
           useNativeDriver: true,
         }).start();
 
-        // Return state yang diubah
         return {
-          ...state,
-          isAlt: !state.isAlt,
-          scaleValue: nextScaleValue,
+          ...item,
+          isAlt: !item.isAlt,
+          scaleValue: nextScale,
         };
-      });
-
-      return updatedStates; // 🔧 PENTING: RETURN updatedStates!
-    });
+      })
+    );
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.grid}>
-      {imagePairs.map((pair, index) => {
+    <FlatList
+      data={imagePairs}
+      numColumns={3}
+      keyExtractor={(_, index) => index.toString()}
+      contentContainerStyle={styles.grid}
+      renderItem={({ item, index }) => {
         const { isAlt, scale } = imageStates[index];
-        const imageSource = isAlt ? pair.alt : pair.main;
-
         return (
-          <Pressable key={index} onPress={() => handleImagePress(index)}>
+          <Pressable onPress={() => handleImagePress(index)}>
             <Animated.View style={[styles.cell, { transform: [{ scale }] }]}>
-              <Image source={{ uri: imageSource }} style={styles.image} />
+              <Image source={{ uri: isAlt ? item.alt : item.main }} style={styles.image} />
             </Animated.View>
           </Pressable>
         );
-      })}
-    </ScrollView>
+      }}
+    />
   );
 }
 
 const styles = StyleSheet.create({
   grid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
-    padding: 6,
-  },
-  cell: {
-    width: Dimensions.get('window').width / 3 - 12,
-    height: Dimensions.get('window').width / 3 - 12,
-    margin: 3,
-    borderRadius: 10,
-    backgroundColor: '#ddd',
-    borderWidth: 1,
-    borderColor: '#aaa',
-    overflow: 'hidden',
     justifyContent: 'center',
     alignItems: 'center',
+    paddingVertical: 10,
+  },
+  cell: {
+    width: CELL_SIZE,
+    height: CELL_SIZE,
+    margin: 4,
+    borderRadius: 8,
+    overflow: 'hidden',
+    backgroundColor: '#eee',
+    borderWidth: 1,
+    borderColor: '#ccc',
   },
   image: {
     width: '100%',
