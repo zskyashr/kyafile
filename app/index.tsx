@@ -9,7 +9,7 @@ import {
   Image,
 } from 'react-native';
 
-// Ganti URL dengan gambar nyata jika ingin menggunakan sumber berbeda
+// Pasangan gambar: 9 utama dan 9 alternatif
 const imagePairs = [
   { main: 'https://picsum.photos/id/101/300', alt: 'https://picsum.photos/id/201/300' },
   { main: 'https://picsum.photos/id/102/300', alt: 'https://picsum.photos/id/202/300' },
@@ -22,39 +22,42 @@ const imagePairs = [
   { main: 'https://picsum.photos/id/109/300', alt: 'https://picsum.photos/id/209/300' },
 ];
 
-export default function GambarGrid3x3() {
+export default function App() {
   const imageSize = Dimensions.get('window').width / 3 - 12;
 
-  // State menyimpan info skala dan gambar alt/main
+  // Inisialisasi state gambar
   const [imageStates, setImageStates] = useState(
     imagePairs.map(() => ({
       isAlt: false,
       scale: new Animated.Value(1),
-      scaleValue: 1, // simpan skala sebagai angka biasa juga
+      scaleValue: 1,
     }))
   );
 
   const handleImagePress = (index: number) => {
+    // Dapatkan state lama lalu ubah
     setImageStates((prevStates) => {
-      const updatedStates = [...prevStates];
-      const current = updatedStates[index];
-      const nextScale = Math.min(current.scaleValue * 1.2, 2.0);
+      const updatedStates = prevStates.map((state, i) => {
+        if (i !== index) return state;
 
-      // Animasi skala
-      Animated.timing(current.scale, {
-        toValue: nextScale,
-        duration: 200,
-        useNativeDriver: true,
-      }).start();
+        const nextScaleValue = Math.min(state.scaleValue * 1.2, 2.0);
 
-      // Toggle gambar dan update skala
-      updatedStates[index] = {
-        ...current,
-        isAlt: !current.isAlt,
-        scaleValue: nextScale,
-      };
+        // Jalankan animasi pembesaran
+        Animated.timing(state.scale, {
+          toValue: nextScaleValue,
+          duration: 200,
+          useNativeDriver: true,
+        }).start();
 
-      return updatedStates;
+        // Return state yang diubah
+        return {
+          ...state,
+          isAlt: !state.isAlt,
+          scaleValue: nextScaleValue,
+        };
+      });
+
+      return updatedStates; // 🔧 PENTING: RETURN updatedStates!
     });
   };
 
