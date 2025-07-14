@@ -2,53 +2,53 @@ import React, { useState } from 'react';
 import {
   View,
   FlatList,
-  Pressable,
   Animated,
+  TouchableOpacity,
   Image,
   StyleSheet,
   Dimensions,
 } from 'react-native';
 
-const imagePairs = [
-  { main: 'https://picsum.photos/id/101/300', alt: 'https://picsum.photos/id/201/300' },
-  { main: 'https://picsum.photos/id/102/300', alt: 'https://picsum.photos/id/202/300' },
-  { main: 'https://picsum.photos/id/103/300', alt: 'https://picsum.photos/id/203/300' },
-  { main: 'https://picsum.photos/id/104/300', alt: 'https://picsum.photos/id/204/300' },
-  { main: 'https://picsum.photos/id/105/300', alt: 'https://picsum.photos/id/205/300' },
-  { main: 'https://picsum.photos/id/106/300', alt: 'https://picsum.photos/id/206/300' },
-  { main: 'https://picsum.photos/id/107/300', alt: 'https://picsum.photos/id/207/300' },
-  { main: 'https://picsum.photos/id/108/300', alt: 'https://picsum.photos/id/208/300' },
-  { main: 'https://picsum.photos/id/109/300', alt: 'https://picsum.photos/id/209/300' },
+const sumberGambar = [
+  { fotoUtama: 'https://picsum.photos/id/301/300', gambarAlternatif: 'https://picsum.photos/id/401/300' },
+  { fotoUtama: 'https://picsum.photos/id/302/300', gambarAlternatif: 'https://picsum.photos/id/402/300' },
+  { fotoUtama: 'https://picsum.photos/id/303/300', gambarAlternatif: 'https://picsum.photos/id/403/300' },
+  { fotoUtama: 'https://picsum.photos/id/304/300', gambarAlternatif: 'https://picsum.photos/id/404/300' },
+  { fotoUtama: 'https://picsum.photos/id/305/300', gambarAlternatif: 'https://picsum.photos/id/405/300' },
+  { fotoUtama: 'https://picsum.photos/id/306/300', gambarAlternatif: 'https://picsum.photos/id/406/300' },
+  { fotoUtama: 'https://picsum.photos/id/307/300', gambarAlternatif: 'https://picsum.photos/id/407/300' },
+  { fotoUtama: 'https://picsum.photos/id/308/300', gambarAlternatif: 'https://picsum.photos/id/408/300' },
+  { fotoUtama: 'https://picsum.photos/id/309/300', gambarAlternatif: 'https://picsum.photos/id/409/300' },
 ];
 
-const CELL_SIZE = Dimensions.get('window').width / 3 - 12;
+const UKURAN_KOTAK = Dimensions.get('window').width / 3 - 14;
 
-export default function GambarGrid3x3() {
-  const [imageStates, setImageStates] = useState(
-    imagePairs.map(() => ({
-      isAlt: false,
-      scale: new Animated.Value(1),
-      scaleValue: 1,
+export default function GaleriInteraktif() {
+  const [statusGambar, aturStatusGambar] = useState(
+    sumberGambar.map(() => ({
+      pakaiAlternatif: false,
+      nilaiSkala: 1,
+      animasiSkala: new Animated.Value(1),
     }))
   );
 
-  const handleImagePress = (index: number) => {
-    setImageStates((prev) =>
-      prev.map((item, i) => {
-        if (i !== index) return item;
+  const saatGambarDitekan = (index: number) => {
+    aturStatusGambar((lama) =>
+      lama.map((elemen, i) => {
+        if (i !== index) return elemen;
 
-        const nextScale = Math.min(item.scaleValue * 1.2, 2);
+        const skalaSelanjutnya = Math.min(elemen.nilaiSkala * 1.2, 2);
 
-        Animated.timing(item.scale, {
-          toValue: nextScale,
+        Animated.timing(elemen.animasiSkala, {
+          toValue: skalaSelanjutnya,
           duration: 200,
           useNativeDriver: true,
         }).start();
 
         return {
-          ...item,
-          isAlt: !item.isAlt,
-          scaleValue: nextScale,
+          ...elemen,
+          pakaiAlternatif: !elemen.pakaiAlternatif,
+          nilaiSkala: skalaSelanjutnya,
         };
       })
     );
@@ -56,41 +56,40 @@ export default function GambarGrid3x3() {
 
   return (
     <FlatList
-      data={imagePairs}
+      data={sumberGambar}
       numColumns={3}
-      keyExtractor={(_, index) => index.toString()}
-      contentContainerStyle={styles.grid}
+      keyExtractor={(_, i) => i.toString()}
+      contentContainerStyle={gaya.grid}
       renderItem={({ item, index }) => {
-        const { isAlt, scale } = imageStates[index];
+        const gambarDipakai = statusGambar[index].pakaiAlternatif ? item.gambarAlternatif : item.fotoUtama;
         return (
-          <Pressable onPress={() => handleImagePress(index)}>
-            <Animated.View style={[styles.cell, { transform: [{ scale }] }]}>
-              <Image source={{ uri: isAlt ? item.alt : item.main }} style={styles.image} />
+          <TouchableOpacity onPress={() => saatGambarDitekan(index)} activeOpacity={0.8}>
+            <Animated.View style={[gaya.kotak, { transform: [{ scale: statusGambar[index].animasiSkala }] }]}>
+              <Image source={{ uri: gambarDipakai }} style={gaya.foto} />
             </Animated.View>
-          </Pressable>
+          </TouchableOpacity>
         );
       }}
     />
   );
 }
 
-const styles = StyleSheet.create({
+const gaya = StyleSheet.create({
   grid: {
     justifyContent: 'center',
     alignItems: 'center',
-    paddingVertical: 10,
+    paddingVertical: 12,
   },
-  cell: {
-    width: CELL_SIZE,
-    height: CELL_SIZE,
-    margin: 4,
-    borderRadius: 8,
+  kotak: {
+    width: UKURAN_KOTAK,
+    height: UKURAN_KOTAK,
+    backgroundColor: '#f0f0f0',
+    margin: 5,
+    borderRadius: 10,
     overflow: 'hidden',
-    backgroundColor: '#eee',
-    borderWidth: 1,
-    borderColor: '#ccc',
+    elevation: 2,
   },
-  image: {
+  foto: {
     width: '100%',
     height: '100%',
     resizeMode: 'cover',
