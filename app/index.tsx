@@ -1,97 +1,148 @@
-import React, { useState } from 'react';
-import {
-  View,
-  FlatList,
-  Animated,
-  TouchableOpacity,
-  Image,
-  StyleSheet,
-  Dimensions,
-} from 'react-native';
+import React from "react";
+import { SafeAreaView, ScrollView, Text, View } from "react-native";
 
-const sumberGambar = [
-  { fotoUtama: 'https://picsum.photos/id/301/300', gambarAlternatif: 'https://picsum.photos/id/401/300' },
-  { fotoUtama: 'https://picsum.photos/id/302/300', gambarAlternatif: 'https://picsum.photos/id/402/300' },
-  { fotoUtama: 'https://picsum.photos/id/303/300', gambarAlternatif: 'https://picsum.photos/id/403/300' },
-  { fotoUtama: 'https://picsum.photos/id/304/300', gambarAlternatif: 'https://picsum.photos/id/404/300' },
-  { fotoUtama: 'https://picsum.photos/id/305/300', gambarAlternatif: 'https://picsum.photos/id/405/300' },
-  { fotoUtama: 'https://picsum.photos/id/306/300', gambarAlternatif: 'https://picsum.photos/id/406/300' },
-  { fotoUtama: 'https://picsum.photos/id/307/300', gambarAlternatif: 'https://picsum.photos/id/407/300' },
-  { fotoUtama: 'https://picsum.photos/id/308/300', gambarAlternatif: 'https://picsum.photos/id/408/300' },
-  { fotoUtama: 'https://picsum.photos/id/309/300', gambarAlternatif: 'https://picsum.photos/id/409/300' },
-];
 
-const UKURAN_KOTAK = Dimensions.get('window').width / 3 - 14;
-
-export default function GaleriInteraktif() {
-  const [statusGambar, aturStatusGambar] = useState(
-    sumberGambar.map(() => ({
-      pakaiAlternatif: false,
-      nilaiSkala: 1,
-      animasiSkala: new Animated.Value(1),
-    }))
-  );
-
-  const saatGambarDitekan = (index: number) => {
-    aturStatusGambar((lama) =>
-      lama.map((elemen, i) => {
-        if (i !== index) return elemen;
-
-        const skalaSelanjutnya = Math.min(elemen.nilaiSkala * 1.2, 2);
-
-        Animated.timing(elemen.animasiSkala, {
-          toValue: skalaSelanjutnya,
-          duration: 200,
-          useNativeDriver: true,
-        }).start();
-
-        return {
-          ...elemen,
-          pakaiAlternatif: !elemen.pakaiAlternatif,
-          nilaiSkala: skalaSelanjutnya,
-        };
-      })
-    );
-  };
-
+export default function Index() {
   return (
-    <FlatList
-      data={sumberGambar}
-      numColumns={3}
-      keyExtractor={(_, i) => i.toString()}
-      contentContainerStyle={gaya.grid}
-      renderItem={({ item, index }) => {
-        const gambarDipakai = statusGambar[index].pakaiAlternatif ? item.gambarAlternatif : item.fotoUtama;
-        return (
-          <TouchableOpacity onPress={() => saatGambarDitekan(index)} activeOpacity={0.8}>
-            <Animated.View style={[gaya.kotak, { transform: [{ scale: statusGambar[index].animasiSkala }] }]}>
-              <Image source={{ uri: gambarDipakai }} style={gaya.foto} />
-            </Animated.View>
-          </TouchableOpacity>
-        );
-      }}
-    />
+    <SafeAreaView style={{ flex: 1 }}>
+      <ScrollView
+        contentContainerStyle={{
+          alignItems: "center",
+          paddingVertical: 30,
+          paddingHorizontal: 10,
+        }}>
+        {/* PRAKTIKUM SEBELUMNYA */}
+        {/* <Text
+          style={{
+            fontFamily: "PlayfairDisplay-Italic",
+            fontSize: 18,
+            color: "black",
+            fontWeight: "bold",
+          }}
+        >
+          MOBILE LEGEND
+        </Text> */}
+
+        {/* TUGAS 4 FONTS*/}
+        <View style={{ marginTop: 30, width: "100%" }}>
+          <Text
+            style={{
+              fontFamily: "PlayfairDisplay",
+              fontSize: 26,
+              color: "blue",
+              fontWeight: "bold",
+              textAlign: "center",
+              marginBottom: 20,
+            }}>
+            NAMA-NAMA TEMAN SAYA 5 KEATAS & 5 KEBAWAH DARI NAMA DI ABSENSI
+          </Text>
+
+          {/* NAMA-NAMA TEMAN SAYA 5 KEATAS & 5 KEBAWAH DARI NAMA DI ABSENSI */}
+          <Text
+            style={{
+              fontFamily: "Roboto",
+              fontSize: 25,
+              marginBottom: 10,
+            }}>
+            105841105222 - MAR'ATUL AZIZAH
+          </Text>
+
+          <Text
+            style={{
+              fontFamily: "Montserrat",
+              fontSize: 25,
+              marginBottom: 10,
+            }}>
+             10584105322 - FIKRAH LEJAHTEGIS
+          </Text>
+
+          <Text
+            style={{
+              fontFamily: "DancingScript",
+              fontSize: 25,
+              marginBottom: 10,
+            }}>
+             105841105422 - ALYA ANANDHA
+          </Text>
+
+          <Text
+            style={{
+              fontFamily: "BitcountGridSingle",
+              fontSize: 25,
+              marginBottom: 10,
+            }}>
+             10584105522 - M. FIKRIH HAIKAL AYATULLAH
+          </Text>
+
+          <Text
+            style={{
+              fontFamily: "Inter",
+              fontSize: 25,
+              marginBottom: 20,
+            }}>
+             10584105622 - MUH. DIRHAM RAHIM
+          </Text>
+
+          {/* NAMA SAYA SENDIRI */}
+          <Text
+            style={{
+              fontFamily: "SpaceMono-Regular",
+              fontSize: 30,
+              fontWeight: "bold",
+            }}>
+             105841105722 - ZASKYA AULIA ASHAR
+          </Text>
+
+          {/* NAMA TEMAN-TEMAN SAYA 5 KE BAWAH DARI NAMA DI ABSENSI */}
+          <Text
+            style={{
+              fontFamily: "Monofett",
+              fontSize: 26,
+              marginTop: 20,
+              marginBottom: 10,
+            }}>
+             105841105822 - MUH. ILHAM AKBAR
+          </Text>
+
+          <Text
+            style={{
+              fontFamily: "RubikDirt",
+              fontSize: 24,
+              marginBottom: 10,
+            }}>
+             10584115922 - ZELVIA
+          </Text>
+
+          <Text
+            style={{
+              fontFamily: "TiltNeon",
+              fontSize: 24,
+              marginBottom: 10,
+            }}>
+            10584116022 - ANDI DIFTAH RAMEYZA KAYLA
+          </Text>
+
+          <Text
+            style={{
+              fontFamily: "FasterOne",
+              fontSize: 24,
+              marginBottom: 10,
+            }}>
+             10584116122 - ARSIFAH AINUN AULIA
+          </Text>
+
+          <Text
+            style={{
+              fontFamily: "PTSans",
+              fontSize: 24,
+              marginBottom: 10,
+            }}>
+             105841106222 - TEGAR SURYA PRAYOGA
+          </Text>
+          
+        </View>
+
+      </ScrollView>
+    </SafeAreaView>
   );
 }
-
-const gaya = StyleSheet.create({
-  grid: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingVertical: 12,
-  },
-  kotak: {
-    width: UKURAN_KOTAK,
-    height: UKURAN_KOTAK,
-    backgroundColor: '#f0f0f0',
-    margin: 5,
-    borderRadius: 10,
-    overflow: 'hidden',
-    elevation: 2,
-  },
-  foto: {
-    width: '100%',
-    height: '100%',
-    resizeMode: 'cover',
-  },
-});
