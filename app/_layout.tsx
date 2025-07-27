@@ -16,7 +16,7 @@ export default function RootLayout() {
     "inter-extrabold": require("../../assets/fonts/Inter_24pt-ExtraBold.ttf"),
     "inter-variable": require("../../assets/fonts/Inter-VariableFont_opsz,wght.ttf"),
     "opensans-bold": require("../../assets/fonts/OpenSans-Bold.ttf"),
-    "opensans-variable": require("../../assets/fonts/OpenSans-VariableFont_wdth,wght.ttf"), // perbaikan dari sebelumnya
+    "opensans-variable": require("../../assets/fonts/OpenSans-VariableFont_wdth,wght.ttf"), 
   });
 
   useEffect(() => {
